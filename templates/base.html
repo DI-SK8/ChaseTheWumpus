@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='CSS/styles.css') }}" />
+    <title>{% block title %}{% endblock %} - Hunt the Wumpus</title>
+</head>
+<body>
+<div id="title">
+    <img src="{{ url_for('static', filename='Asset/titre-removebg-preview.png') }}"class="imgchar"/>
+</div>
+{% block content %}
+{% endblock %}
+</body>
+
+</html>
