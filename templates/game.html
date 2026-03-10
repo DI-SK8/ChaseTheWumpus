@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}jeux{% endblock %}
+{% block content %}
+
+    {% if statut == "prof" %} <!--utilisation de jinja-->
+        <p>Bonjour Professeur</p>
+    {% else %}
+        <p>Bonjour Eleve</p>
+    {% endif %}
+
+    <!--<table>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}" height="200" width="200"/></td>
+            <td><img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}" height="200" width="200"/></td>
+            <td><img src="{{ url_for('static', filename='Asset/tunnel_1-removebg-preview.png') }}" height="200" width="200"/></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><img src="{{ url_for('static', filename='Asset/tunnel_1-removebg-preview.png') }}" height="200" width="200"/></td>
+            <td></td>
+        </tr>
+    </table>-->
+{% endblock %}
