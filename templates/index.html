@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Connexion{% endblock %}
+
+{% block content %}
+<div id="connexion">
+    <form action="{{ url_for('game') }}" method="GET">
+        <h1>connectez-vous</h1>
+            <div>Nom</div>
+            <input name="nom" id="nom" type="text"/>
+            <div>Mots de passe</div>
+            <input type="password" id="password" name="password">
+            <input type="submit" value="Connexion" id="connexion_btn">
+    </form>
+</div>
+
+<div id="character">
+    <div id="player">
+        <img src="{{ url_for('static', filename='Asset/perso-removebg-preview.png') }}" class="imgchar"/>
+    </div>
+    <!--<div id="arrow">
+
+    </div>-->
+    <div id="wumpus">
+        <img src="{{ url_for('static', filename='Asset/wampus_2.png') }}" class="imgchar"/>
+    </div>
+</div>
+{% endblock %}
