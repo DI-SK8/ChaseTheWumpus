@@ -41,7 +41,17 @@ body {
     color: #E6F7FF;
     font-size: 20px;
 }
+input {
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid #E6F7FF;
+    font-family: 'MedievalSharp', cursive;
+    font-size: 20px;
+    text-align: center;
+}
 
+input:focus {
+    box-shadow: 0 0 10px #00d4ff;
+}
 #title
 {
   position: absolute;
