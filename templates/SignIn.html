@@ -1,17 +1,17 @@
 {% extends "base.html" %}
-{% block title %}login{% endblock %}
+{% block title %}Sign in{% endblock %}
 
 {% block content %}
 <div id="connexion">
-    <form action="{{ url_for('game') }}" method="POST">
-        <h1>connectez-vous</h1>
+    <form action="{{ url_for('login') }}" method="POST">
+        <h1>Créer votre compte</h1>
             <div>Nom</div>
-            <input name="nom" id="nom" type="text"/>
+            <input name="pseudo" id="nom" type="text"/>
             <div>Mots de passe</div>
             <input type="password" id="password" name="password">
-            <input type="submit" value="Connexion" id="connexion_btn">
+            <input type="submit" value="Création" id="connexion_btn">
     </form>
-    <a href="{{ url_for('SignIn') }}" id="sign_in">Créer un compte</a>
+    <a href="{{ url_for('login') }}" id="sign_in">Connectez-vous</a>
 </div>
 
 <div id="character">

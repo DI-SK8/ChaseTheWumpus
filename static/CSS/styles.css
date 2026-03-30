@@ -31,6 +31,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 
     background-image: url("../Asset/gate_2.png");
     background-size: contain;
@@ -102,10 +103,44 @@ input
     padding: 5px;
     background: rgba(230, 247, 255, 0.5);
     transition: all 0.3s ease;
-
 }
 #connexion_btn
 {
-    margin: 15px;
+    margin-top: 15px;
     font-family: 'MedievalSharp';
+}
+
+#sign_in
+{
+    margin: 15px;
+    color: #E6F7FF;
+}
+/*--------------------------------------------*/
+#flash-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+}
+
+.flash {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-family: 'MedievalSharp', cursive;
+    text-align: center;
+}
+
+/* Style selon la catégorie (success ou error) */
+.success {
+    background-color: rgba(40, 167, 69, 0.8);
+    color: white;
+    border: 1px solid #1e7e34;
+}
+
+.error {
+    background-color: black;
+    color: white;
+    border: 1px solid #00d4ff;
 }
