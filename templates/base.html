@@ -20,7 +20,19 @@
 <div id="title">
     <img src="{{ url_for('static', filename='Asset/titre-removebg-preview.png') }}"class="imgchar"/>
 </div>
-{% block content %}{% endblock %}
+{%set ROW = 6%}
+{%set COLUMN = 8%}
+{% block content %}
+<table>
+    {%for i in range(ROW) %} <!--8*6-->
+        <tr>
+            {%for e in range(COLUMN)%}
+            <td><img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}" height="70" width="70"/></td>
+            {%endfor%}
+        </tr>
+    {%endfor%}
+</table>
+{% endblock %}
 </body>
 
 </html>

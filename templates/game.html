@@ -1,28 +1,17 @@
 {% extends "base.html" %}
 {% block title %}jeux{% endblock %}
 {% block content %}
-
-    {% if statut == "prof" %} <!--utilisation de jinja-->
-        <p>Bonjour Professeur</p>
-    {% else %}
-        <p>Bonjour Eleve</p>
-    {% endif %}
-
-    <!--<table>
+<table>
+    {%for row in grid %}
         <tr>
-            <td></td>
-            <td></td>
-            <td></td>
+            {%for col in row%}
+                {%if col == 0%}
+                    <td><img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}" height="70" width="70"/></td>
+                {%else%}
+                    <td><img src="{{ url_for('static', filename='Asset/tunnel_1-removebg-preview.png') }}" height="70" width="70"/></td>
+                {%endif%}
+            {%endfor%}
         </tr>
-        <tr>
-            <td><img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}" height="200" width="200"/></td>
-            <td><img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}" height="200" width="200"/></td>
-            <td><img src="{{ url_for('static', filename='Asset/tunnel_1-removebg-preview.png') }}" height="200" width="200"/></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><img src="{{ url_for('static', filename='Asset/tunnel_1-removebg-preview.png') }}" height="200" width="200"/></td>
-            <td></td>
-        </tr>
-    </table>-->
-{% endblock %}
+    {%endfor%}
+</table>
+{%endblock%}
