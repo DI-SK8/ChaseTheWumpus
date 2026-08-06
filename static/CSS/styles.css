@@ -144,3 +144,11 @@ input
     color: white;
     border: 1px solid #00d4ff;
 }
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+td img {
+    display: block;
+}
