@@ -37,8 +37,9 @@ def GenerateGrid(level):
             r = random.randint(0, ROW - 1)
             c = random.randint(0, COL - 1)
             if grid[r][c] == 0:
-                grid[r][c] = 1
+                grid[r][c] = random.randint(1, 2)
                 nb_hallway_put += 1
+
         start = None
         for r in range(ROW):
             for c in range(COL):
@@ -50,11 +51,15 @@ def GenerateGrid(level):
             nb_of_case = FloodFile(grid, start[0], start[1])
 
             # Compter combien de cavernes existent au total
-            total_of_cave = sum(row.count(0) for row in grid)
+            total_of_case = 48
 
-            # Si le Flood Fill a touché TOUTES les cavernes, la grille est valide !
-            if len(nb_of_case) == total_of_cave:
+            # Si le Flood Fill a touché TOUTES les cavernes, la grille est valide
+            if len(nb_of_case) == total_of_case:
                 gridOk = True
+    for i in range(len(grid)):
+        for j in range(len(grid[i])):
+            print(grid[i][j], end=" ")
+        print()
 
     return grid
 
@@ -73,10 +78,19 @@ def FloodFile(grid, r_start, c_start):
     view = set()
 
     def propagation(r, c):
-        if r < 0 or r >= ROW or c < 0 or c >= COL:
-            return
+        """
 
-        if grid[r][c] == 1 or (r, c) in view:
+        param :
+            r (int) : starting row
+            c (int) : starting column
+
+        """
+        r = r % ROW
+        c = c % COL
+
+        if (r, c) in view:
+            return
+        if (grid[r][c] == 2) and (grid[r][(c+1)%COL]==1 and grid[(r+1)%ROW][c]==1 and grid[(r+1)%ROW][(c+1)%COL]==2):
             return
 
         view.add((r, c))
@@ -89,7 +103,6 @@ def FloodFile(grid, r_start, c_start):
 
     propagation(r_start, c_start)
     return view
-
 
 
 
