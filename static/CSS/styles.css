@@ -76,12 +76,12 @@ input:focus {
   align-items: flex-end;
 }
 
-#player {
+#player_fic {
     display: flex;
     justify-content: flex-start;
 }
 
-#wumpus {
+#wumpus_fic {
     display: flex;
     justify-content: flex-end;
 }
@@ -114,6 +114,12 @@ input
 {
     margin: 15px;
     color: #E6F7FF;
+}
+#player
+{
+    position: absolute;
+    height: 65px;
+    width: 65px;
 }
 /*--------------------------------------------*/
 #flash-container {
@@ -151,4 +157,6 @@ table {
 }
 td img {
     display: block;
+    height: 70px;
+    width: 70px;
 }

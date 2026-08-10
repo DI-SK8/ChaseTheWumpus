@@ -3,15 +3,22 @@
 {% block content %}
 <table>
     {%for row in grid %}
+        {%set y = loop.index0%}
         <tr>
             {%for col in row%}
-                {%if col == 0%}
-                    <td><img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}" height="70" width="70"/></td>
-                {%elif col ==1%}
-                    <td><img src="{{ url_for('static', filename='Asset/tunnel_1-removebg-preview.png') }}" height="70" width="70"/></td>
-                {%else%}
-                    <td><img src="{{ url_for('static', filename='Asset/tunnel_2-removebg-preview.png') }}" height="70" width="70"/></td>
-                {%endif%}
+                {%set x = loop.index0%}
+                <td>
+                    {%if y == start[0] and x == start[1]%}
+                        <img src="{{ url_for('static', filename='Asset/perso-removebg-preview.png') }}" id="player"/>
+                    {%endif%}
+                    {%if col == 0%}
+                        <img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}"/>
+                    {%elif col ==1%}
+                        <img src="{{ url_for('static', filename='Asset/tunnel_1-removebg-preview.png') }}"/>
+                    {%else%}
+                        <img src="{{ url_for('static', filename='Asset/tunnel_2-removebg-preview.png') }}"/>
+                    {%endif%}
+                </td>
             {%endfor%}
         </tr>
     {%endfor%}

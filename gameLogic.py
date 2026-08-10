@@ -40,20 +40,11 @@ def GenerateGrid(level):
                 grid[r][c] = random.randint(1, 2)
                 nb_hallway_put += 1
 
-        start = None
-        for r in range(ROW):
-            for c in range(COL):
-                if grid[r][c] == 0:
-                    start = (r, c)
-                    break
-            if start : break
+        start = GetStart(grid)
         if start:
             nb_of_case = FloodFile(grid, start[0], start[1])
 
-            # Compter combien de cavernes existent au total
             total_of_case = 48
-
-            # Si le Flood Fill a touché TOUTES les cavernes, la grille est valide
             if len(nb_of_case) == total_of_case:
                 gridOk = True
     for i in range(len(grid)):
@@ -62,6 +53,25 @@ def GenerateGrid(level):
         print()
 
     return grid
+
+def GetStart(grid) :
+    """
+    will found the start of the player
+
+    param :
+        grid (list) : grid of the plate
+    return :
+        start (tuple of int) : coordinates of the start of the player
+    """
+    start = None
+    while start == None :
+        r = random.randint(0, ROW - 1)
+        c = random.randint(0, COL - 1)
+        if grid[r][c] == 0:
+            start = (r, c)
+    return start
+
+
 
 def FloodFile(grid, r_start, c_start):
     """
