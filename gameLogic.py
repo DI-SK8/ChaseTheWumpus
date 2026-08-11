@@ -47,13 +47,14 @@ def GenerateGrid(level):
             gridOk = True
 
     GetPits(grid)
+
+
     "affichage terminal"
     for i in range(len(grid)):
         for j in range(len(grid[i])):
             print(grid[i][j], end=" ")
         print()
     return grid
-
 
 def GetPits(grid):
     """
@@ -82,6 +83,15 @@ def GetPits(grid):
     return grid
 
 def GetPitsHint(dr, dc, grid,pr,pc):
+    """
+
+    :param dr:
+    :param dc:
+    :param grid:
+    :param pr:
+    :param pc:
+    :return:
+    """
     r = (pr + dr) % ROW
     c = (pc + dc) % COL
     case = grid[r][c]
@@ -112,9 +122,9 @@ def GetPitsHint(dr, dc, grid,pr,pc):
     GetPitsHint(next_dr, next_dc, grid, r, c)
 
 
-def GetStart(grid) :
+def GetStartCharacter(grid, character) :
     """
-    will found the start of the player
+    will found the start of the player and the wumpus
 
     param :
         grid (list) : grid of the plate
@@ -125,8 +135,12 @@ def GetStart(grid) :
     while start == None :
         r = random.randint(0, ROW - 1)
         c = random.randint(0, COL - 1)
-        if grid[r][c] == 0:
-            start = (r, c)
+        if character == 'player' :
+            if grid[r][c] == 0:
+                start = (r, c)
+        else :
+            if grid[r][c] == 0 or grid[r][c] == 3 or grid[r][c] == 4 :
+                start = (r, c)
     return start
 
 

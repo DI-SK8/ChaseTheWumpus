@@ -9,8 +9,13 @@
                 {%set x = loop.index0%}
                 <td>
                     {%if y == start[0] and x == start[1]%}
-                        <img src="{{ url_for('static', filename='Asset/perso-removebg-preview.png') }}" id="player"/>
+                        <img src="{{ url_for('static', filename='Asset/perso-removebg-preview.png') }}" class="character"/>
                     {%endif%}
+                    {%if y == wumpus[0] and x == wumpus[1]%}
+                        <img src="{{ url_for('static', filename='Asset/wumpuq-removebg-preview.png') }}" class="character"/>
+                    {%endif%}
+
+
                     {%if col == 0%}
                         <img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}"/>
                     {%elif col ==1%}

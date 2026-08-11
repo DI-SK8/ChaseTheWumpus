@@ -115,7 +115,7 @@ input
     margin: 15px;
     color: #E6F7FF;
 }
-#player
+.character
 {
     position: absolute;
     height: 65px;
