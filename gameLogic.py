@@ -46,17 +46,30 @@ def GenerateGrid(level):
         if len(nb_of_case) == total_of_case:
             gridOk = True
 
-    GetPits(grid)
+    neighbour = [(0, 1), (1, 0), (-1, 0), (0, -1)]
 
+    GetPits(grid, neighbour)
+    wumpus = GetStartCharacter(grid, 'wumpus')
+    ApplyBlood(grid, wumpus[0], wumpus[1])
+
+    for (dr, dc) in neighbour:
+        GetWumpusHint(dr, dc, grid, wumpus[0], wumpus[1], 2)
+
+    diag_neighbour = [(-1,-1),(1,1),(-1,1),(1,-1)]
+    for (dr, dc) in diag_neighbour:
+        diag_r = (wumpus[0] + dr) % ROW
+        diag_c = (wumpus[1] + dc) % COL
+        if grid[diag_r][diag_c] in (0, 4):
+            ApplyBlood(grid, diag_r, diag_c)
 
     "affichage terminal"
     for i in range(len(grid)):
         for j in range(len(grid[i])):
             print(grid[i][j], end=" ")
         print()
-    return grid
+    return grid, wumpus
 
-def GetPits(grid):
+def GetPits(grid, neighbour):
     """
     will place the pits and the hints on the grid
 
@@ -75,12 +88,73 @@ def GetPits(grid):
             pits.add((r, c))
             is_pits_put+=1
 
-    neighbour = [(0,1),(1,0),(-1,0),(0,-1)]
-
     for (pr,pc) in pits:
         for (dr, dc) in neighbour:
             GetPitsHint(dr,dc,grid,pr,pc)
     return grid
+
+def ApplyBlood(grid, r, c):
+    """
+
+    :param grid:
+    :param r:
+    :param c:
+    :return:
+    """
+    if grid[r][c] == 0 :
+        grid[r][c] = 6
+        return
+    if grid[r][c] == 4 :
+        grid[r][c] = 7
+        return
+
+def GetWumpusHint(dr, dc, grid, pr, pc, steps=2):
+    """
+    :param dr:
+    :param dc:
+    :param grid:
+    :param pr:
+    :param pc:
+    :return:
+    """
+    if steps<=0:
+        return
+
+
+    r = (pr + dr) % ROW
+    c = (pc + dc) % COL
+    case = grid[r][c]
+
+    if case == 3:
+        return
+
+    if case in (0, 4,6,7):
+        ApplyBlood(grid, r, c)
+        steps -= 1
+        if steps <= 0:
+            return
+
+    next_dr, next_dc = None, None
+
+    if case == 1:
+        if (dr, dc) == (0, 1): next_dr, next_dc = (1, 0)
+        elif (dr, dc) == (-1, 0): next_dr, next_dc = (0, -1)
+        elif (dr, dc) == (0, -1): next_dr, next_dc = (-1, 0)
+        elif (dr, dc) == (1, 0): next_dr, next_dc = (0, 1)
+
+    elif case == 2:
+        if (dr, dc) == (0, 1): next_dr, next_dc = (-1, 0)
+        elif (dr, dc) == (1, 0): next_dr, next_dc = (0, -1)
+        elif (dr, dc) == (0, -1): next_dr, next_dc = (1, 0)
+        elif (dr, dc) == (-1, 0): next_dr, next_dc = (0, 1)
+
+    elif case in (0, 4, 6, 7):
+        next_dr, next_dc = dr, dc
+
+    if next_dr is None or next_dc is None:
+        return
+
+    GetWumpusHint(next_dr, next_dc, grid, r, c, steps)
 
 def GetPitsHint(dr, dc, grid,pr,pc):
     """
@@ -131,14 +205,18 @@ def GetStartCharacter(grid, character) :
     return :
         start (tuple of int) : coordinates of the start of the player
     """
-    start = None
-    while start == None :
-        r = random.randint(0, ROW - 1)
-        c = random.randint(0, COL - 1)
-        if character == 'player' :
-            if grid[r][c] == 0:
-                start = (r, c)
-        else :
+    if character == 'player':
+        last_cave = [
+            (r, c) for r in range(ROW) for c in range(COL)
+            if grid[r][c] == 0
+        ]
+        return random.choice(last_cave)
+
+    else :
+        start = None
+        while start == None:
+            r = random.randint(0, ROW - 1)
+            c = random.randint(0, COL - 1)
             if grid[r][c] == 0 or grid[r][c] == 3 or grid[r][c] == 4 :
                 start = (r, c)
     return start
