@@ -40,19 +40,77 @@ def GenerateGrid(level):
                 grid[r][c] = random.randint(1, 2)
                 nb_hallway_put += 1
 
-        start = GetStart(grid)
-        if start:
-            nb_of_case = FloodFile(grid, start[0], start[1])
+        nb_of_case = FloodFile(grid, 0, 0)
 
-            total_of_case = 48
-            if len(nb_of_case) == total_of_case:
-                gridOk = True
+        total_of_case = 48
+        if len(nb_of_case) == total_of_case:
+            gridOk = True
+
+    GetPits(grid)
+    "affichage terminal"
     for i in range(len(grid)):
         for j in range(len(grid[i])):
             print(grid[i][j], end=" ")
         print()
-
     return grid
+
+
+def GetPits(grid):
+    """
+    will place the pits and the hints on the grid
+
+    param :
+        grid (list) : grid of the plate
+    return :
+        updated_grid (list) : grid of the plate with pits
+    """
+    is_pits_put = 0
+    pits = set()
+    while is_pits_put <2:
+        r = random.randint(0, ROW - 1)
+        c = random.randint(0, COL - 1)
+        if grid[r][c] == 0:
+            grid[r][c] = 3
+            pits.add((r, c))
+            is_pits_put+=1
+
+    neighbour = [(0,1),(1,0),(-1,0),(0,-1)]
+
+    for (pr,pc) in pits:
+        for (dr, dc) in neighbour:
+            GetPitsHint(dr,dc,grid,pr,pc)
+    return grid
+
+def GetPitsHint(dr, dc, grid,pr,pc):
+    r = (pr + dr) % ROW
+    c = (pc + dc) % COL
+    case = grid[r][c]
+
+    if case in (3,4) :
+        return
+    if case == 0 :
+        grid[r][c] = 4
+        return
+
+    next_dr, next_dc = None, None
+    if case == 1:
+
+        if (dr, dc) == (0, 1): next_dr, next_dc = (1, 0)
+        elif (dr, dc) == (-1, 0): next_dr, next_dc = (0, -1)
+        elif (dr, dc) == (0, -1): next_dr, next_dc = (-1, 0)
+        elif (dr, dc) == (1, 0): next_dr, next_dc = (0, 1)
+
+    elif case == 2:
+        if (dr, dc) == (0, 1): next_dr, next_dc = (-1, 0)
+        elif (dr, dc) == (1, 0): next_dr, next_dc = (0, -1)
+        elif (dr, dc) == (0, -1): next_dr, next_dc = (1, 0)
+        elif (dr, dc) == (-1, 0): next_dr, next_dc = (0, 1)
+
+    if next_dr is None or next_dc is None:
+        return
+
+    GetPitsHint(next_dr, next_dc, grid, r, c)
+
 
 def GetStart(grid) :
     """
@@ -113,6 +171,3 @@ def FloodFile(grid, r_start, c_start):
 
     propagation(r_start, c_start)
     return view
-
-
-

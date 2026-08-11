@@ -15,8 +15,12 @@
                         <img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}"/>
                     {%elif col ==1%}
                         <img src="{{ url_for('static', filename='Asset/tunnel_1-removebg-preview.png') }}"/>
-                    {%else%}
+                    {%elif col ==2%}
                         <img src="{{ url_for('static', filename='Asset/tunnel_2-removebg-preview.png') }}"/>
+                    {%elif col ==3%}
+                        <img src="{{ url_for('static', filename='Asset/puit-removebg-preview.png') }}"/>
+                    {%elif col ==4%}
+                        <img src="{{ url_for('static', filename='Asset/proche_puit-removebg-preview.png') }}"/>
                     {%endif%}
                 </td>
             {%endfor%}
