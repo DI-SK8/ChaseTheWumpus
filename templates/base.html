@@ -5,33 +5,12 @@
     <title>{% block title %}{% endblock %} - Hunt the Wumpus</title>
 </head>
 <body>
-{% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div id="flash-container">
-          {% for category, message in messages %}
-            <div class="flash {{ category }}">
-                {{ message }}
-            </div>
-          {% endfor %}
-        </div>
-      {% endif %}
-    {% endwith %}
 
 <div id="title">
     <img src="{{ url_for('static', filename='Asset/titre-removebg-preview.png') }}"class="imgchar"/>
 </div>
-{%set ROW = 6%}
-{%set COLUMN = 8%}
+
 {% block content %}
-<table>
-    {%for i in range(ROW) %} <!--8*6-->
-        <tr>
-            {%for e in range(COLUMN)%}
-            <td><img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}" height="70" width="70"/></td>
-            {%endfor%}
-        </tr>
-    {%endfor%}
-</table>
 {% endblock %}
 <div id="character">
     <div id="player_fic">
@@ -44,6 +23,17 @@
         <img src="{{ url_for('static', filename='Asset/wampus_2.png') }}" class="imgchar"/>
     </div>
 </div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="flash-container">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">
+                {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
 </body>
 
 </html>

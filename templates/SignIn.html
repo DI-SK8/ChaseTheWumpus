@@ -3,10 +3,10 @@
 
 {% block content %}
 <div id="connexion">
-    <form action="{{ url_for('login') }}" method="POST">
+    <form action="{{ url_for('SignIn') }}" method="POST">
         <h1>Créer votre compte</h1>
             <div>Nom</div>
-            <input name="pseudo" id="nom" type="text"/>
+            <input name="nom" id="nom" type="text"/>
             <div>Mots de passe</div>
             <input type="password" id="password" name="password">
             <input type="submit" value="Création" id="connexion_btn">
