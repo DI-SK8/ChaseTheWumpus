@@ -174,3 +174,13 @@ def get_leaderboard():
     cur.close()
     conn.close()
     return rankings
+
+def suppcompte(username) :
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        DELETE FROM users WHERE username = %s;
+    """, (username,))
+    conn.commit()
+    cur.close()
+    conn.close()
