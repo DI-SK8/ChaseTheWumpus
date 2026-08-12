@@ -213,7 +213,7 @@ def GetStartCharacter(grid, character) :
 
     else :
         start = None
-        while start == None:
+        while start is None:
             r = random.randint(0, ROW - 1)
             c = random.randint(0, COL - 1)
             if grid[r][c] == 0 or grid[r][c] == 3 or grid[r][c] == 4 :
