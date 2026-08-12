@@ -11,9 +11,14 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev_key_fallback') # on peut
 app.config['SESSION_COOKIE_HTTPONLY'] = True #prot javascrips et xss
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax' #CSRF
 
-
 init_db()
 
+@app.after_request
+def add_header(response): #evite le retour
+    response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+    response.headers['Pragma'] = 'no-cache'
+    response.headers['Expires'] = '-1'
+    return response
 @app.route('/')
 def home():
     #faire session
@@ -26,6 +31,9 @@ def home():
 
 @app.route('/login',methods=['POST','GET'])
 def login():
+    if 'user' in session:
+        session.pop('user', None)
+        flash("Vous avez été déconnecté en quittant la partie.", "info")
     if request.method == 'POST':
         name_user=request.form['nom']
         pswd_user=request.form['password']
@@ -41,6 +49,9 @@ def login():
     return render_template('index.html')
 @app.route('/SignIn',methods=['GET', 'POST'])
 def SignIn():
+    if 'user' in session:
+        session.pop('user', None)
+        flash("Vous avez été déconnecté en quittant la partie.", "info")
     if request.method == 'POST':  # post methode
         name_user = request.form['nom']
         pswd_user = request.form['password']

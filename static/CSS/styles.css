@@ -147,7 +147,7 @@ input
 }
 
 /* Style selon la catégorie (success ou error) */
-.success {
+.info {
     background-color: rgba(40, 167, 69, 0.8);
     color: white;
     border: 1px solid #1e7e34;
