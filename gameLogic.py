@@ -93,20 +93,44 @@ def GetPits(grid, neighbour):
             GetPitsHint(dr,dc,grid,pr,pc)
     return grid
 
-def ApplyBlood(grid, r, c):
+def GetPitsHint(dr, dc, grid,pr,pc):
     """
 
+    :param dr:
+    :param dc:
     :param grid:
-    :param r:
-    :param c:
+    :param pr:
+    :param pc:
     :return:
     """
-    if grid[r][c] == 0 :
-        grid[r][c] = 6
+    r = (pr + dr) % ROW
+    c = (pc + dc) % COL
+    case = grid[r][c]
+
+    if case in (3,4) :
         return
-    if grid[r][c] == 4 :
-        grid[r][c] = 7
+    if case == 0 :
+        grid[r][c] = 4
         return
+
+    next_dr, next_dc = None, None
+    if case == 1:
+
+        if (dr, dc) == (0, 1): next_dr, next_dc = (1, 0)
+        elif (dr, dc) == (-1, 0): next_dr, next_dc = (0, -1)
+        elif (dr, dc) == (0, -1): next_dr, next_dc = (-1, 0)
+        elif (dr, dc) == (1, 0): next_dr, next_dc = (0, 1)
+
+    elif case == 2:
+        if (dr, dc) == (0, 1): next_dr, next_dc = (-1, 0)
+        elif (dr, dc) == (1, 0): next_dr, next_dc = (0, -1)
+        elif (dr, dc) == (0, -1): next_dr, next_dc = (1, 0)
+        elif (dr, dc) == (-1, 0): next_dr, next_dc = (0, 1)
+
+    if next_dr is None or next_dc is None:
+        return
+
+    GetPitsHint(next_dr, next_dc, grid, r, c)
 
 def GetWumpusHint(dr, dc, grid, pr, pc, steps=2):
     """
@@ -156,45 +180,20 @@ def GetWumpusHint(dr, dc, grid, pr, pc, steps=2):
 
     GetWumpusHint(next_dr, next_dc, grid, r, c, steps)
 
-def GetPitsHint(dr, dc, grid,pr,pc):
+def ApplyBlood(grid, r, c):
     """
 
-    :param dr:
-    :param dc:
     :param grid:
-    :param pr:
-    :param pc:
+    :param r:
+    :param c:
     :return:
     """
-    r = (pr + dr) % ROW
-    c = (pc + dc) % COL
-    case = grid[r][c]
-
-    if case in (3,4) :
+    if grid[r][c] == 0 :
+        grid[r][c] = 6
         return
-    if case == 0 :
-        grid[r][c] = 4
+    if grid[r][c] == 4 :
+        grid[r][c] = 7
         return
-
-    next_dr, next_dc = None, None
-    if case == 1:
-
-        if (dr, dc) == (0, 1): next_dr, next_dc = (1, 0)
-        elif (dr, dc) == (-1, 0): next_dr, next_dc = (0, -1)
-        elif (dr, dc) == (0, -1): next_dr, next_dc = (-1, 0)
-        elif (dr, dc) == (1, 0): next_dr, next_dc = (0, 1)
-
-    elif case == 2:
-        if (dr, dc) == (0, 1): next_dr, next_dc = (-1, 0)
-        elif (dr, dc) == (1, 0): next_dr, next_dc = (0, -1)
-        elif (dr, dc) == (0, -1): next_dr, next_dc = (1, 0)
-        elif (dr, dc) == (-1, 0): next_dr, next_dc = (0, 1)
-
-    if next_dr is None or next_dc is None:
-        return
-
-    GetPitsHint(next_dr, next_dc, grid, r, c)
-
 
 def GetStartCharacter(grid, character) :
     """
@@ -221,7 +220,20 @@ def GetStartCharacter(grid, character) :
                 start = (r, c)
     return start
 
+def GetBat(level, grid, pos_creature) :
+    """
 
+    :param level:
+    :param grid:
+    :return:
+    """
+    if level == 'easy' : target_count = 1
+    else : target_count = 2
+    valid_cells = [
+        (r, c) for r in range(ROW) for c in range(COL)
+        if grid[r][c] in (0, 1, 2, 4, 6, 7) and (r, c) not in pos_creature.values()
+    ]
+    return random.sample(valid_cells, min(target_count, len(valid_cells)))
 
 def FloodFile(grid, r_start, c_start):
     """

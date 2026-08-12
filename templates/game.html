@@ -8,13 +8,18 @@
             {%for col in row%}
                 {%set x = loop.index0%}
                 <td>
-                    {%if y == start[0] and x == start[1]%}
+                    {%if y == pos_creature["player"][0] and x == pos_creature["player"][1]%}
                         <img src="{{ url_for('static', filename='Asset/perso-removebg-preview.png') }}" class="character"/>
                     {%endif%}
-                    {%if y == wumpus[0] and x == wumpus[1]%}
+                    {%if y == pos_creature["wumpus"][0] and x == pos_creature["wumpus"][1]%}
                         <img src="{{ url_for('static', filename='Asset/wumpuq-removebg-preview.png') }}" class="character"/>
                     {%endif%}
 
+                    {%for bat in pos_creature["bats"]%}
+                        {%if y == bat[0] and x == bat[1]%}
+                            <img src="{{ url_for('static', filename='Asset/bat_2.png') }}" class="character"/>
+                        {%endif%}
+                    {%endfor%}
 
                     {%if col == 0%}
                         <img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}"/>
