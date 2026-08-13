@@ -234,6 +234,21 @@ input:focus {
     border: 1px solid #00d4ff;
 }
 
+
+.lose {
+    font-size: 50px;
+    background-color: black;
+    color: red;
+    border: 1px solid #00d4ff;
+    animation: slideDown 3s ease-in-out, fadeOut 0.5s 4s forwards;
+}
+
+@keyframes slideDown {
+    0%   { transform: translateY(-50vh); }         /* Départ : à sa place */
+    50%  {  transform: translateY(-50vh); }     /* Milieu : monte de 50% de la hauteur de l'écran */
+    100% { transform: translateY(0); }         /* Fin : revient à sa place */
+}
+
 table {
     border-collapse: collapse;
     border-spacing: 0;

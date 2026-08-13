@@ -319,3 +319,24 @@ def DepPlayer(grid, value, pos_creature) :
 
     pos_creature['player'] = player
     return pos_creature
+
+def IsHeDead(grid, pos_creature) :
+
+    player = pos_creature['player']
+    wumpus = pos_creature.get('wumpus')
+    pits = set()
+
+    if player == wumpus:
+        return 1
+
+    for r in range(ROW):
+        for c in range(COL):
+            if grid[r][c] == 3:
+                pits.add((r, c))
+    if player in pits :
+        return 2
+
+    return 0
+
+
+

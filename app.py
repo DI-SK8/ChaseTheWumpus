@@ -86,14 +86,23 @@ def game():
         pos_creature = session['pos_creature']
         grid = session['grid']
     if request.method == 'POST':
-
-        direction = request.form.get('direction')
-        DepPlayer(grid, direction, pos_creature)
-
-        session['pos_creature'] = pos_creature
+        if not session.get('is_dead', False):
 
 
-    return render_template('game.html', grid=grid, pos_creature=pos_creature)
+            direction = request.form.get('direction')
+            DepPlayer(grid, direction, pos_creature)
+            type_of_death = IsHeDead(grid, pos_creature)
+            if type_of_death == 1:
+                flash("mort par le wumpus.", "lose")
+                session['is_dead'] = True
+                # update_stats(session['user'], 'wumpus')
+            elif type_of_death == 2:
+                flash("mort par un puit.", "lose")
+                session['is_dead'] = True
+                # update_stats(session['user'], 'pits')
+            session['pos_creature'] = pos_creature
+
+    return render_template('game.html', grid=grid, pos_creature=pos_creature, is_dead=session.get('is_dead', False))
 
 if __name__ == '__main__':
     app.run(debug=False) # mettre en false a la fin
