@@ -77,14 +77,21 @@ def game():
         start = GetStartCharacter(grid, 'player')
         pos_creature = {"player" :start,
                     "wumpus" :wumpus}
-        bats = GetBat('medium', grid, pos_creature)
-        pos_creature["bats"] = bats
+        pos_creature["bats"] = GetBat('medium', grid, pos_creature)
+
 
         session['pos_creature'] = pos_creature
         session['grid'] = grid
     else :
         pos_creature = session['pos_creature']
         grid = session['grid']
+    if request.method == 'POST':
+
+        direction = request.form.get('direction')
+        DepPlayer(grid, direction, pos_creature)
+
+        session['pos_creature'] = pos_creature
+
 
     return render_template('game.html', grid=grid, pos_creature=pos_creature)
 
