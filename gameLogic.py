@@ -275,3 +275,47 @@ def FloodFile(grid, r_start, c_start):
 
     propagation(r_start, c_start)
     return view
+
+def DepPlayer(grid, value, pos_creature) :
+    player = pos_creature['player']
+    r, c = player[0], player[1]
+
+    match value:
+        case 'up':
+            new_coord = ((r - 1) % ROW, c)
+        case 'down':
+            new_coord = ((r + 1) % ROW, c)
+        case 'left':
+            new_coord = (r, (c - 1) % COL)
+        case 'right':
+            new_coord = (r, (c + 1) % COL)
+
+    current_tile = grid[r][c]
+    came_from = pos_creature.get('came_from')
+
+
+    if current_tile == 1:
+        if came_from in ('right', 'up'):
+            if value not in ('left', 'down'):
+                return pos_creature
+        else:
+            if value not in ('right', 'up'):
+                return pos_creature
+
+    elif current_tile == 2:
+        if came_from in ('right', 'down'):
+            if value not in ('left', 'up'):
+                return pos_creature
+        else:
+            if value not in ('right', 'down'):
+                return pos_creature
+
+
+    player = new_coord
+
+
+    if grid[player[0]][player[1]] in (1, 2):
+        pos_creature['came_from'] = value
+
+    pos_creature['player'] = player
+    return pos_creature
