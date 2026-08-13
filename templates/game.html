@@ -1,6 +1,28 @@
 {% extends "base.html" %}
 {% block title %}jeux{% endblock %}
 {% block content %}
+<div id="pad">
+    <form action="{{ url_for('game') }}" method="POST" class="pad-form">
+    <button type="submit" name="direction" value="up" class="pad-btn up" title="Haut">
+        <img src="{{ url_for('static', filename='Asset/cross_pad.png') }}"
+             class="pad-arrow" /></button>
+
+    <div class="pad-middle">
+        <button type="submit" name="direction" value="left" class="pad-btn left" title="Gauche">
+            <img src="{{ url_for('static', filename='Asset/cross_pad.png') }}"
+                 class="pad-arrow" id="pad-arrow-left"/></button>
+        <div class="pad-center"></div>
+        <button type="submit" name="direction" value="right" class="pad-btn right" title="Droite">
+            <img src="{{ url_for('static', filename='Asset/cross_pad.png') }}"
+                 class="pad-arrow" id="pad-arrow-rigth"/></button>
+    </div>
+
+    <button type="submit" name="direction" value="down" class="pad-btn down" title="Bas">
+        <img src="{{ url_for('static', filename='Asset/cross_pad.png') }}"
+             class="pad-arrow" id="pad-arrow-down"/></button>
+  </form>
+</div>
+
 <table>
     {%for row in grid %}
         {%set y = loop.index0%}

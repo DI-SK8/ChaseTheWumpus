@@ -32,7 +32,7 @@ def home():
 @app.route('/login',methods=['POST','GET'])
 def login():
     if 'user' in session:
-        session.pop('user', None)
+        session.clear()
         flash("Vous avez été déconnecté en quittant la partie.", "info")
     if request.method == 'POST':
         name_user=request.form['nom']
@@ -50,7 +50,7 @@ def login():
 @app.route('/SignIn',methods=['GET', 'POST'])
 def SignIn():
     if 'user' in session:
-        session.pop('user', None)
+        session.clear()
         flash("Vous avez été déconnecté en quittant la partie.", "info")
     if request.method == 'POST':  # post methode
         name_user = request.form['nom']
@@ -72,12 +72,19 @@ def game():
         flash("Veuillez vous connecter pour jouer.", "error")
         return redirect(url_for('login'))
 
-    grid, wumpus = GenerateGrid('medium')
-    start = GetStartCharacter(grid, 'player')
-    pos_creature = {"player" :start,
+    if 'grid' not in session and 'pos_creature' not in session:
+        grid, wumpus = GenerateGrid('medium')
+        start = GetStartCharacter(grid, 'player')
+        pos_creature = {"player" :start,
                     "wumpus" :wumpus}
-    bats = GetBat('medium', grid, pos_creature)
-    pos_creature["bats"] = bats
+        bats = GetBat('medium', grid, pos_creature)
+        pos_creature["bats"] = bats
+
+        session['pos_creature'] = pos_creature
+        session['grid'] = grid
+    else :
+        pos_creature = session['pos_creature']
+        grid = session['grid']
 
     return render_template('game.html', grid=grid, pos_creature=pos_creature)
 
