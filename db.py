@@ -55,7 +55,7 @@ def init_db():
     cur.execute("""
         CREATE OR REPLACE VIEW leaderboard AS
         SELECT u.username,
-               ps.victories AS score_total,
+               ps.victories,
                ps.games_played,
                ps.killed_by_wumpus,
                ps.fell_in_pit,
@@ -155,16 +155,36 @@ def update_stats(username, event):
     cur.close()
     conn.close()
 
-def get_leaderboard():
+def get_leaderboard(limit=10):
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
-    cur.execute("SELECT * FROM leaderboard;")
+    cur.execute("""SELECT * FROM leaderboard LIMIT %s;""",(limit,))
     rankings = cur.fetchall()
 
     cur.close()
     conn.close()
     return rankings
+
+def get_stats(username):
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    cur.execute("""
+        SELECT ps.games_played,
+               ps.victories,
+               ps.killed_by_wumpus,
+               ps.fell_in_pit,
+               ps.miss_shot
+        FROM player_stats ps
+        JOIN users u ON ps.user_id = u.id
+        WHERE u.username = %s;
+    """, (username,))
+
+    stats = cur.fetchone()
+    cur.close()
+    conn.close()
+    return stats
 
 def suppcompte(username) :
     conn = get_connection()
@@ -175,3 +195,14 @@ def suppcompte(username) :
     conn.commit()
     cur.close()
     conn.close()
+
+def delete_table():
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        DROP VIEW leaderboard;
+    """)
+    conn.commit()
+    cur.close()
+    conn.close()
+
