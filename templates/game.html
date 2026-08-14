@@ -38,7 +38,7 @@
                     {%endif%}
 
                     {%for bat in pos_creature["bats"]%}
-                        {%if y == bat[0] and x == bat[1]%}
+                        {%if y == bat[0][0] and x == bat[0][1]%}
                             <img src="{{ url_for('static', filename='Asset/bat_2.png') }}" class="character"/>
                         {%endif%}
                     {%endfor%}

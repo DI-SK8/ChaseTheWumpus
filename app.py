@@ -90,6 +90,9 @@ def game():
 
 
             direction = request.form.get('direction')
+
+            pos_creature = UseBat(grid, pos_creature)
+
             DepPlayer(grid, direction, pos_creature)
             type_of_death = IsHeDead(grid, pos_creature)
             if type_of_death == 1:
@@ -100,6 +103,7 @@ def game():
                 flash("mort par un puit.", "lose")
                 session['is_dead'] = True
                 # update_stats(session['user'], 'pits')
+
             session['pos_creature'] = pos_creature
 
     return render_template('game.html', grid=grid, pos_creature=pos_creature, is_dead=session.get('is_dead', False))

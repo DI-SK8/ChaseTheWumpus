@@ -233,7 +233,8 @@ def GetBat(level, grid, pos_creature) :
         (r, c) for r in range(ROW) for c in range(COL)
         if grid[r][c] in (0, 1, 2, 4, 6, 7) and (r, c) not in pos_creature.values()
     ]
-    return random.sample(valid_cells, min(target_count, len(valid_cells)))
+    chosen_cel =random.sample(valid_cells, min(target_count, len(valid_cells)))
+    return  [[(r, c), 0] for r, c in chosen_cel]
 
 def FloodFile(grid, r_start, c_start):
     """
@@ -339,4 +340,30 @@ def IsHeDead(grid, pos_creature) :
     return 0
 
 
+def UseBat(grid, pos_creature):
+    bats = pos_creature.get('bats')
+    player = pos_creature.get('player')
+
+    bat = next((b for b in bats if b[0] == player), None)
+
+    if bat:
+        indice = bats.index(bat)
+        if bat[1] == 0:
+            bat[1] += 1
+        else :
+            other_bat = [b[0] for b in bats]
+            valid_cells = [
+                (r, c) for r in range(ROW) for c in range(COL)
+                if grid[r][c] in (0, 1, 2, 4, 6, 7)
+                   and (r, c) not in other_bat
+                   and (r,c) != pos_creature['wumpus']
+            ]
+            chosen_cel = random.sample(valid_cells, min(2, len(valid_cells)))
+            bat[0] = chosen_cel[0]
+            bat[1] = 0
+            player = chosen_cel[1]
+
+    pos_creature['bats'] = bats
+    pos_creature['player'] = player
+    return pos_creature
 
