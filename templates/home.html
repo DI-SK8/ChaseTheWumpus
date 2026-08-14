@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}home{% endblock %}
+
+{% block content %}
+<div id="welcome">Bonjour {{ user }}</div>
+<!-- button -->
+<div id="stat-container" class="info-player-container">
+    <h2>Mes statistiques</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Victoires</th>
+                <th>Parties jouées</th>
+                <th>Morts par Wumpus</th>
+                <th>Tombé dans le puits</th>
+                <th>Tirs manqués</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ stats.victories }}</td>
+                <td>{{ stats.killed_by_wumpus }}</td>
+                <td>{{ stats.fell_in_pit }}</td>
+                <td>{{ stats.miss_shot }}</td>
+                <td>{{ stats.games_played }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div id="stat-form-container">
+    <form action="{{ url_for('game') }}" method="POST">
+
+       <input type="checkbox" id="blind" class="toggle-checkbox">
+        <label for="blind" class="pixel-btn">Blind Mode</label>
+
+        <input type="checkbox" id="fast" class="toggle-checkbox">
+         <label for="fast" class="pixel-btn">Fast Mode</label>
+
+        <div class="pixel-btn-group" role="group" aria-label="Mode de Jeu">
+            <input type="radio" class="toggle-radio" name="gameMode" id="easy" autocomplete="off" checked>
+             <label for="easy" class="pixel-btn">Facile</label>
+
+            <input type="radio" class="toggle-radio" name="gameMode" id="medium" autocomplete="off">
+             <label for="medium" class="pixel-btn">Moyen</label>
+
+            <input type="radio" class="toggle-radio" name="gameMode" id="hard" autocomplete="off">
+             <label for="hard" class="pixel-btn">Difficile</label>
+        </div>
+
+        <button type="submit" class="btn-start">Nouvelle partie</button>
+    </form>
+
+    <form action="{{ url_for('logout') }}" method="POST">
+        <button type="submit" class="btn-deconexion">Deconexion</button>
+    </form>
+</div>
+{% endblock %}

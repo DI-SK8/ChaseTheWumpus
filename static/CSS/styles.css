@@ -7,19 +7,19 @@ form
     justify-content: center;
 }
 body {
-  margin: 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: relative;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 
-  background-image: url("../Asset/background_forest.jpg");
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  overflow: hidden;
+    background-image: url("../Asset/background_forest.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    overflow: hidden;
 }
 
 #connexion
@@ -60,25 +60,27 @@ input:focus {
 }
 #title
 {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 3%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 3%;
 }
 #character {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
 
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
-  box-sizing: border-box;
-  align-items: flex-end;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    box-sizing: border-box;
+    align-items: flex-end;
+
+    z-index: -1;
 }
 
 #player_fic {
@@ -117,7 +119,7 @@ input:focus {
     height: 65px;
     width: 65px;
 }
-
+/*--------------------------*/
 #pad
 {
     position: fixed;
@@ -146,7 +148,6 @@ input:focus {
 {
     transform: rotate(180deg);
 }
-/* Conteneur du formulaire D-Pad */
 .pad-form {
     display: flex;
     flex-direction: column;
@@ -157,21 +158,18 @@ input:focus {
 
 }
 
-/* Ligne du milieu (Gauche - Centre - Droite) */
 .pad-middle {
     display: flex;
     align-items: center;
     gap: 15px;
 }
 
-/* Carré central décoratif */
 .pad-center {
     width: 50px;
     height: 50px;
     background: transparent;
 }
 
-/* Style individuel des boutons */
 .pad-btn {
     width: 60px;
     height: 60px;
@@ -195,6 +193,149 @@ input:focus {
 .pad-btn:active {
     transform: scale(0.95);
     background: rgba(0, 212, 255, 0.6);
+}
+/*--------------------------------------------*/
+#welcome{
+    position: fixed;
+    top: 20vh;
+    font-size: 45px;
+    font-weight: bold;
+    font-family: 'MedievalSharp';
+    color: #E6F7FF;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+}
+
+.info-player-container
+{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+
+    font-family: 'MedievalSharp';
+    color: #E6F7FF;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+
+    background-image: url("../Asset/planche.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+
+    padding: 0px 50px 20px;
+    box-sizing: border-box;
+}
+
+#stat-container {
+    width: 800px;
+    max-height: 400px;
+}
+
+#leaderboard-container {
+
+    width: 900px;
+    max-height: 400px;
+}
+
+#stat-container th,
+#stat-container td {
+    padding: 10px 8px;
+    text-align: center;
+}
+
+#stat-form-container
+{
+    position: absolute;
+    bottom: 5vh;
+}
+
+.toggle-checkbox {
+    display: none;
+}
+
+.toggle-radio {
+    display: none;
+}
+
+.pixel-btn-group {
+    display: inline-flex;
+}
+
+.pixel-btn-group .pixel-btn {
+    border-radius: 0;
+    margin-right: -2px;
+}
+
+/* 2. Bouton désactivé : Petit, transparent, style pixel sombre */
+.pixel-btn {
+    height: 40px;
+    width: 115px;
+    text-align: center;
+    display: inline-block;
+    font-family: 'MedievalSharp', cursive;
+    font-size: 14px;
+    padding: 6px 14px;
+    margin: 2px;
+    background-color: transparent;
+    border: 2px solid #2d3b3d;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+}
+
+/* Hover quand désactivé */
+.pixel-btn:hover {
+    color: #fff;
+    border-color: #0099ab;
+}
+
+/* 3. Bouton ACTIVÉ : Fond pierre grise, écriture & bordure en bleu cyan */
+.toggle-checkbox:checked + .pixel-btn,
+.toggle-radio:checked + .pixel-btn {
+    background-color: #2b3336;
+    color: #0099ab;
+    border-color: #0099ab;
+    box-shadow: 0 0 8px rgba(0, 153, 171, 0.4);
+}
+
+.btn-start {
+    display: inline-block;
+    font-family: 'MedievalSharp', cursive;
+    font-size: 14px;
+    padding: 8px 16px;
+    color: #091315;
+    background-color: #0099ab;
+    border: 2px solid #00b3a3;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(0, 153, 171, 0.5);
+    transition: all 0.15s ease-in-out;
+    margin-top: 10px;
+}
+
+.btn-start:hover {
+    background-color: #00b3a3;
+    box-shadow: 0 0 15px rgba(0, 229, 209, 0.8);
+    transform: translateY(-2px);
+}
+
+.btn-deconexion{
+    display: inline-block;
+    font-family: 'MedievalSharp', cursive;
+    font-size: 14px;
+    padding: 6px 14px;
+    background-color: transparent;
+    border: 2px solid #8a2be2;
+    border-color: #8b2626;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    margin: 10px;
+}
+
+.btn-deconexion:hover {
+    background-color: #3b1919;
+    color: #ff8080;
+    border-color: #ff4d4d;
+    box-shadow: 0 0 8px rgba(255, 77, 77, 0.4);
 }
 
 /*--------------------------------------------*/
@@ -221,7 +362,6 @@ input:focus {
     box-shadow: 0 0.4vmin 1.5vmin rgba(0, 0, 0, 0.5);
 }
 
-/* Style selon la catégorie  */
 .info {
     background-color: rgba(40, 167, 69, 0.8);
     color: white;
@@ -244,9 +384,9 @@ input:focus {
 }
 
 @keyframes slideDown {
-    0%   { transform: translateY(-50vh); }         /* Départ : à sa place */
-    50%  {  transform: translateY(-50vh); }     /* Milieu : monte de 50% de la hauteur de l'écran */
-    100% { transform: translateY(0); }         /* Fin : revient à sa place */
+    0%   { transform: translateY(-50vh); }
+    50%  {  transform: translateY(-50vh); }
+    100% { transform: translateY(0); }
 }
 
 table {

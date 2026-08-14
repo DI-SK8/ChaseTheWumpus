@@ -19,21 +19,25 @@ def add_header(response): #evite le retour
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '-1'
     return response
-@app.route('/')
+@app.route('/home')
 def home():
-    #faire session
-    session['xyz']=42
-    a=session['xyz']
-    b=session.get('xyz',-1) # voir ce que c'est
+    if 'user' not in session:
+        flash("Veuillez vous connecter.", "error")
+        return redirect(url_for('login'))
 
+    stats = get_stats(session['user'])
+
+    return render_template('home.html', user=session['user'], stats=stats)
+@app.route('/logout',methods=['POST','GET'])
+def logout():
+    session.clear()
+    flash("Vous avez été déconnecté avec succès.", "info")
     return redirect(url_for('login'))
 
-
-@app.route('/login',methods=['POST','GET'])
+@app.route('/',methods=['POST','GET'])
 def login():
     if 'user' in session:
         session.clear()
-        flash("Vous avez été déconnecté en quittant la partie.", "info")
     if request.method == 'POST':
         name_user=request.form['nom']
         pswd_user=request.form['password']
@@ -44,14 +48,13 @@ def login():
             flash("les informations de connexion ne sont pas corect", "error")
         else:
             session['user'] = name_user
-            return redirect(url_for('game'))
+            return redirect(url_for('home'))
 
     return render_template('index.html')
 @app.route('/SignIn',methods=['GET', 'POST'])
 def SignIn():
     if 'user' in session:
         session.clear()
-        flash("Vous avez été déconnecté en quittant la partie.", "info")
     if request.method == 'POST':  # post methode
         name_user = request.form['nom']
         pswd_user = request.form['password']
@@ -64,7 +67,7 @@ def SignIn():
         else :
             add_user(name_user, pswd_user)
             session['user'] = name_user
-            return redirect(url_for('game'))
+            return redirect(url_for('home'))
     return render_template('SignIn.html')
 @app.route('/game', methods=['POST', 'GET'])
 def game():
@@ -91,9 +94,11 @@ def game():
 
             direction = request.form.get('direction')
 
+            DepPlayer(grid, direction, pos_creature)
+
             pos_creature = UseBat(grid, pos_creature)
 
-            DepPlayer(grid, direction, pos_creature)
+
             type_of_death = IsHeDead(grid, pos_creature)
             if type_of_death == 1:
                 flash("mort par le wumpus.", "lose")
@@ -107,6 +112,7 @@ def game():
             session['pos_creature'] = pos_creature
 
     return render_template('game.html', grid=grid, pos_creature=pos_creature, is_dead=session.get('is_dead', False))
+
 
 if __name__ == '__main__':
     app.run(debug=False) # mettre en false a la fin
