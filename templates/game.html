@@ -31,7 +31,7 @@
                 {% set x = loop.index0 %}
                 <td class="game-cell">
     {% if fog_grid[y][x] == True %}
-        <img src="{{ url_for('static', filename='Asset/mure.jpg') }}" class="mure"/>
+        <img src="{{ url_for('static', filename='Asset/fog.png') }}" class="mure"/>
     {% else %}
         {% if col == 0 %}
             <img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}" class="tile-bg"/>

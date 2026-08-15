@@ -67,6 +67,7 @@ input:focus {
     display: flex;
     justify-content: center;
     margin-top: 3%;
+
 }
 #character {
     position: absolute;
@@ -138,6 +139,13 @@ input:focus {
     top: 0;
     left: 0;
     z-index: 1;
+}
+
+#title img {
+    filter: drop-shadow(2px 2px 0 #E6F7FF)
+            drop-shadow(-2px -2px 0 #E6F7FF)
+            drop-shadow(2px -2px 0 #E6F7FF)
+            drop-shadow(-2px 2px 0 #E6F7FF);
 }
 
 .mure {
