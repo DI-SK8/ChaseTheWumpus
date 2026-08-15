@@ -89,6 +89,7 @@ def SignIn():
             return redirect(url_for('home'))
     return render_template('SignIn.html')
 
+
 @app.route('/game', methods=['POST', 'GET'])
 def game():
     if 'user' not in session:
@@ -108,12 +109,14 @@ def game():
 
         grid, wumpus = GenerateGrid(difficulty)
         start = GetStartCharacter(grid, 'player')
-        pos_creature = {"player" :start,
-                    "wumpus" :wumpus}
+        pos_creature = {
+            "player": start,
+            "wumpus": wumpus,
+            "came_from": None
+        }
         pos_creature["bats"] = GetBat(difficulty, grid, pos_creature)
 
-        fog_grid = None
-        fog_grid = GetFog(pos_creature,mode, fog_grid)
+        fog_grid = GetFog(pos_creature, mode, None)
 
         session['fogGrid'] = fog_grid
         session['pos_creature'] = pos_creature
@@ -122,9 +125,13 @@ def game():
         session['shoot'] = False
 
         return redirect(url_for('game'))
+
     elif request.method == 'POST':
         pos_creature = session.get('pos_creature')
         grid = session.get('grid')
+        mode = session.get('mode', None)
+        speed = session.get('speed', None)
+        fog_grid = session.get('fogGrid')
 
         if not session.get('is_dead', False):
             if request.form.get('shoot') == 'shoot':
@@ -142,12 +149,10 @@ def game():
 
             else:
                 direction = request.form.get('direction')
-                speed = session.get('speed', None)
-                DepPlayer(grid, direction, pos_creature, speed)
+
+                pos_creature = DepPlayer(grid, direction, pos_creature, speed, fog_grid)
                 pos_creature = UseBat(grid, pos_creature)
 
-                mode = session.get('mode', None)
-                fog_grid = session.get('fogGrid')
                 session['fogGrid'] = GetFog(pos_creature, mode, fog_grid)
 
                 type_of_death = IsHeDead(grid, pos_creature)
@@ -164,18 +169,16 @@ def game():
                     session['fogGrid'] = GetFog(pos_creature, 'clear', None)
 
             session['pos_creature'] = pos_creature
-            return redirect(url_for('game'))
-    else:
-        pos_creature = session.get('pos_creature')
-        grid = session.get('grid')
-        fog_grid = session.get('fogGrid')
+            session.modified = True
+
+        return redirect(url_for('game'))
 
     return render_template('game.html',
-                           grid=grid,
-                           pos_creature=pos_creature,
+                           grid=session.get('grid'),
+                           pos_creature=session.get('pos_creature'),
                            is_dead=session.get('is_dead', False),
                            shoot=session.get('shoot', False),
-                           fog_grid=fog_grid,)
+                           fog_grid=session.get('fogGrid'))
 
 if __name__ == '__main__':
     app.run(debug=False) # mettre en false a la fin

@@ -62,11 +62,6 @@ def GenerateGrid(level):
         if grid[diag_r][diag_c] in (0, 4):
             ApplyBlood(grid, diag_r, diag_c)
 
-    "affichage terminal"
-    for i in range(len(grid)):
-        for j in range(len(grid[i])):
-            print(grid[i][j], end=" ")
-        print()
     return grid, wumpus
 
 def GetPits(grid, neighbour):
@@ -113,24 +108,13 @@ def GetPitsHint(dr, dc, grid,pr,pc):
         grid[r][c] = 4
         return
 
-    next_dr, next_dc = None, None
-    if case == 1:
-
-        if (dr, dc) == (0, 1): next_dr, next_dc = (1, 0)
-        elif (dr, dc) == (-1, 0): next_dr, next_dc = (0, -1)
-        elif (dr, dc) == (0, -1): next_dr, next_dc = (-1, 0)
-        elif (dr, dc) == (1, 0): next_dr, next_dc = (0, 1)
-
-    elif case == 2:
-        if (dr, dc) == (0, 1): next_dr, next_dc = (-1, 0)
-        elif (dr, dc) == (1, 0): next_dr, next_dc = (0, -1)
-        elif (dr, dc) == (0, -1): next_dr, next_dc = (1, 0)
-        elif (dr, dc) == (-1, 0): next_dr, next_dc = (0, 1)
+    next_dr, next_dc = GetNextD(case, dr, dc)
 
     if next_dr is None or next_dc is None:
         return
 
     GetPitsHint(next_dr, next_dc, grid, r, c)
+
 
 def GetWumpusHint(dr, dc, grid, pr, pc, steps=2):
     """
@@ -143,7 +127,6 @@ def GetWumpusHint(dr, dc, grid, pr, pc, steps=2):
     """
     if steps<=0:
         return
-
 
     r = (pr + dr) % ROW
     c = (pc + dc) % COL
@@ -158,9 +141,20 @@ def GetWumpusHint(dr, dc, grid, pr, pc, steps=2):
         if steps <= 0:
             return
 
-    next_dr, next_dc = None, None
+    next_dr, next_dc = GetNextD(case, dr, dc)
 
+    if case in (0, 4, 6, 7):
+        next_dr, next_dc = dr, dc
+
+    if next_dr is None or next_dc is None:
+        return
+
+    GetWumpusHint(next_dr, next_dc, grid, r, c, steps)
+
+def GetNextD(case, dr, dc) :
+    next_dr, next_dc = None, None
     if case == 1:
+
         if (dr, dc) == (0, 1): next_dr, next_dc = (1, 0)
         elif (dr, dc) == (-1, 0): next_dr, next_dc = (0, -1)
         elif (dr, dc) == (0, -1): next_dr, next_dc = (-1, 0)
@@ -171,14 +165,11 @@ def GetWumpusHint(dr, dc, grid, pr, pc, steps=2):
         elif (dr, dc) == (1, 0): next_dr, next_dc = (0, -1)
         elif (dr, dc) == (0, -1): next_dr, next_dc = (1, 0)
         elif (dr, dc) == (-1, 0): next_dr, next_dc = (0, 1)
-
-    elif case in (0, 4, 6, 7):
+    else :
         next_dr, next_dc = dr, dc
 
-    if next_dr is None or next_dc is None:
-        return
+    return next_dr, next_dc
 
-    GetWumpusHint(next_dr, next_dc, grid, r, c, steps)
 
 def ApplyBlood(grid, r, c):
     """
@@ -195,30 +186,29 @@ def ApplyBlood(grid, r, c):
         grid[r][c] = 7
         return
 
-def GetStartCharacter(grid, character) :
+
+def GetStartCharacter(grid, character):
     """
     will found the start of the player and the wumpus
 
     param :
         grid (list) : grid of the plate
+        character (string) : 'player' or 'wumpus'
     return :
-        start (tuple of int) : coordinates of the start of the player
+        start (tuple of int) : coordinates of the start
     """
     if character == 'player':
-        last_cave = [
+        valid_cells = [
             (r, c) for r in range(ROW) for c in range(COL)
             if grid[r][c] == 0
         ]
-        return random.choice(last_cave)
+    else:
+        valid_cells = [
+            (r, c) for r in range(ROW) for c in range(COL)
+            if grid[r][c] in (0, 3, 4)
+        ]
 
-    else :
-        start = None
-        while start is None:
-            r = random.randint(0, ROW - 1)
-            c = random.randint(0, COL - 1)
-            if grid[r][c] == 0 or grid[r][c] == 3 or grid[r][c] == 4 :
-                start = (r, c)
-    return start
+    return random.choice(valid_cells)
 
 def GetBat(level, grid, pos_creature) :
     """
@@ -268,7 +258,6 @@ def FloodFile(grid, r_start, c_start):
 
         view.add((r, c))
 
-
         propagation(r + 1, c)
         propagation(r - 1, c)
         propagation(r, c + 1)
@@ -290,64 +279,65 @@ def Mouvement(direction, r, c):
             next_coord = (r, (c + 1) % COL)
     return next_coord
 
-def DepPlayer(grid, value, pos_creature, mode) :
+
+def DepPlayer(grid, value, pos_creature, mode, fog_grid=None):
     player = pos_creature['player']
     r, c = player[0], player[1]
 
-    if mode == 'Fast' :
-
+    if mode == 'Fast':
         new_coord = Mouvement(value, r, c)
         r, c = new_coord
 
-        while grid[r][c] in (1, 2) :
+        while grid[r][c] in (1, 2):
+            pos_creature['player'] = (r, c)
+            if fog_grid is not None:
+                GetFog(pos_creature, mode, fog_grid)
+
             current_tile = grid[r][c]
             value = ThroughtTunel(current_tile, value)
             new_coord = Mouvement(value, r, c)
             r, c = new_coord
 
-    else :
+    else:
         new_coord = Mouvement(value, r, c)
         current_tile = grid[r][c]
         came_from = pos_creature.get('came_from')
 
-        if current_tile == 1:
-            if came_from in ('right', 'up'):
-                if value not in ('left', 'down'):
-                    return pos_creature
-            else:
-                if value not in ('right', 'up'):
-                    return pos_creature
-
-        elif current_tile == 2:
-            if came_from in ('right', 'down'):
-                if value not in ('left', 'up'):
-                    return pos_creature
-            else:
-                if value not in ('right', 'down'):
-                    return pos_creature
+        if current_tile in (1, 2):
+            if current_tile == 1:
+                if came_from in ('right', 'up'):
+                    if value not in ('left', 'down'):
+                        return pos_creature
+                else:
+                    if value not in ('right', 'up'):
+                        return pos_creature
+            elif current_tile == 2:
+                if came_from in ('right', 'down'):
+                    if value not in ('left', 'up'):
+                        return pos_creature
+                else:
+                    if value not in ('right', 'down'):
+                        return pos_creature
 
     player = new_coord
 
     if grid[player[0]][player[1]] in (1, 2):
         pos_creature['came_from'] = value
+    else:
+        pos_creature['came_from'] = None
 
     pos_creature['player'] = player
     return pos_creature
 
 def IsHeDead(grid, pos_creature) :
-
     player = pos_creature['player']
     wumpus = pos_creature.get('wumpus')
-    pits = set()
 
     if player == wumpus:
         return 1
 
-    for r in range(ROW):
-        for c in range(COL):
-            if grid[r][c] == 3:
-                pits.add((r, c))
-    if player in pits :
+    r, c = player
+    if grid[r][c] == 3:
         return 2
 
     return 0
@@ -363,7 +353,7 @@ def UseBat(grid, pos_creature):
         if bat[1] == 0:
             bat[1] += 1
         else :
-            other_bat = [b[0] for b in bats]
+            other_bat = {b[0] for b in bats}
             valid_cells = [
                 (r, c) for r in range(ROW) for c in range(COL)
                 if grid[r][c] in (0, 1, 2, 4, 6, 7)
