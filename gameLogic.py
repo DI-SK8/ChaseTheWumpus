@@ -367,3 +367,42 @@ def UseBat(grid, pos_creature):
     pos_creature['player'] = player
     return pos_creature
 
+
+def ShootArrow(grid, value, pos_creature):
+    player = pos_creature['player']
+    wumpus = pos_creature['wumpus']
+
+    r, c = player[0], player[1]
+    current_direction = value
+
+    while True:
+        match current_direction:
+            case 'up':
+                next_coord = ((r - 1) % ROW, c)
+            case 'down':
+                next_coord = ((r + 1) % ROW, c)
+            case 'left':
+                next_coord = (r, (c - 1) % COL)
+            case 'right':
+                next_coord = (r, (c + 1) % COL)
+
+        r, c = next_coord
+        tile = grid[r][c]
+
+        if (r, c) == wumpus:
+            return True
+
+        if tile not in (1, 2):
+            return False
+
+        if tile == 1:
+            if current_direction in ('right', 'up'):
+                current_direction = 'left' if current_direction == 'up' else 'down'
+            else:
+                current_direction = 'right' if current_direction == 'down' else 'up'
+        elif tile == 2:
+            if current_direction in ('right', 'down'):
+                current_direction = 'left' if current_direction == 'down' else 'up'
+            else:
+                current_direction = 'right' if current_direction == 'up' else 'down'
+

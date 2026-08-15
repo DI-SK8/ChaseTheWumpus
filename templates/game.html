@@ -63,4 +63,27 @@
         </tr>
     {%endfor%}
 </table>
+
+<div id="shoot-container">
+    <form action="{{ url_for('game') }}" method="POST">
+        <div class="pixel-btn-group" role="group" aria-label="Direction">
+            <input type="radio" class="toggle-radio" name="shoot_dir" id="gauche" autocomplete="off" checked
+            value="left">
+             <label for="gauche" class="pixel-btn">Gauche</label>
+
+            <input type="radio" class="toggle-radio" name="shoot_dir" id="haut" autocomplete="off"
+            value="up">
+             <label for="haut" class="pixel-btn">Haut</label>
+
+            <input type="radio" class="toggle-radio" name="shoot_dir" id="droit" autocomplete="off"
+            value="right">
+             <label for="droit" class="pixel-btn">Droit</label>
+
+            <input type="radio" class="toggle-radio" name="shoot_dir" id="bas" autocomplete="off"
+            value="down">
+             <label for="bas" class="pixel-btn">Bas</label>
+        </div>
+        <button type="submit" class="btn-start" value="shoot" name="shoot">tire</button>
+    </form>
+</div>
 {%endblock%}

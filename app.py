@@ -112,26 +112,35 @@ def game():
         session['pos_creature'] = pos_creature
         session['grid'] = grid
         session['is_dead'] = False
+        session['shoot'] = False
 
         return redirect(url_for('game'))
     elif request.method == 'POST':
         pos_creature = session.get('pos_creature')
         grid = session.get('grid')
         if not session.get('is_dead', False):
+            if request.form.get('shoot') == 'shoot':
+                direction = request.form.get("shoot_dir")
+                win = ShootArrow(grid,direction ,pos_creature)
+                if win :
+                    flash("Victory", "win")
+                else :
+                    flash("Tire raté", "lose")
+            else :
+                direction = request.form.get('direction')
+                DepPlayer(grid, direction, pos_creature)
+                pos_creature = UseBat(grid, pos_creature)
 
-            direction = request.form.get('direction')
-            DepPlayer(grid, direction, pos_creature)
-            pos_creature = UseBat(grid, pos_creature)
+                type_of_death = IsHeDead(grid, pos_creature)
+                if type_of_death == 1:
+                    flash("mort par le wumpus.", "lose")
+                    session['is_dead'] = True
+                    # update_stats(session['user'], 'wumpus')
+                elif type_of_death == 2:
+                    flash("mort par un puit.", "lose")
+                    session['is_dead'] = True
+                    # update_stats(session['user'], 'pits')
 
-            type_of_death = IsHeDead(grid, pos_creature)
-            if type_of_death == 1:
-                flash("mort par le wumpus.", "lose")
-                session['is_dead'] = True
-                # update_stats(session['user'], 'wumpus')
-            elif type_of_death == 2:
-                flash("mort par un puit.", "lose")
-                session['is_dead'] = True
-                # update_stats(session['user'], 'pits')
 
             session['pos_creature'] = pos_creature
             return redirect(url_for('game'))
@@ -142,7 +151,8 @@ def game():
     return render_template('game.html',
                            grid=grid,
                            pos_creature=pos_creature,
-                           is_dead=session.get('is_dead', False))
+                           is_dead=session.get('is_dead', False),
+                           shoot=session.get('shoot', False),)
 
 if __name__ == '__main__':
     app.run(debug=False) # mettre en false a la fin
