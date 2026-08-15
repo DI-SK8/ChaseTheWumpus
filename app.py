@@ -80,9 +80,9 @@ def SignIn():
         if name_user == '' or pswd_user == '':
             flash("Merci de remplir les champs", "error")
         elif is_user_used(name_user) :
-            flash("le pseudo est déjà utilisé", "error")
+            flash("Le pseudo est déjà utilisé", "error")
         elif not is_pwd_ok(pswd_user) :
-            flash("le mot de passe doit faire minimu 6 charcatere avec un chiffre et une majuscule", "error")
+            flash("Le mot de passe doit faire minimum 6 carcatères avec un chiffre et une majuscule", "error")
         else :
             add_user(name_user, pswd_user)
             session['user'] = name_user
@@ -157,13 +157,13 @@ def game():
 
                 type_of_death = IsHeDead(grid, pos_creature)
                 if type_of_death == 1:
-                    flash("Mort par le Wumpus.", "lose")
+                    flash("Le Wumpus vous a mangé.", "lose")
                     session['is_dead'] = True
                     update_stats(session['user'], 'wumpus')
                     session['fogGrid'] = GetFog(pos_creature, 'clear', None)
 
                 elif type_of_death == 2:
-                    flash("Mort par un puits.", "lose")
+                    flash("Tombé dans le puit.", "lose")
                     session['is_dead'] = True
                     update_stats(session['user'], 'pits')
                     session['fogGrid'] = GetFog(pos_creature, 'clear', None)
