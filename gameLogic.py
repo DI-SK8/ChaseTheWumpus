@@ -294,8 +294,6 @@ def DepPlayer(grid, value, pos_creature, mode) :
     player = pos_creature['player']
     r, c = player[0], player[1]
 
-
-
     if mode == 'Fast' :
 
         new_coord = Mouvement(value, r, c)
@@ -417,3 +415,19 @@ def ThroughtTunel(tile, current_direction) :
             current_direction = 'right' if current_direction == 'up' else 'down'
 
     return current_direction
+
+def GetFog(pos_creature, mode, fog_grid) :
+
+    if mode == 'clear':
+        return [[False for _ in range(COL)] for _ in range(ROW)]
+
+    player = pos_creature['player']
+    r, c = player[0], player[1]
+
+    if fog_grid is None or mode == 'Blind':
+        fog_grid = [[True for _ in range(COL)] for _ in range(ROW)]
+        fog_grid[r][c] = False
+        return fog_grid
+    else:
+        fog_grid[r][c] = False
+        return fog_grid

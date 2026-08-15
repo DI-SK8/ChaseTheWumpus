@@ -113,11 +113,52 @@ input:focus {
     margin: 15px;
     color: #E6F7FF;
 }
-.character
-{
+/*-------------------*/
+
+.game-table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin: auto;
+}
+
+.game-cell {
+    position: relative;
+    width: 70px;
+    height: 70px;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.tile-bg {
+    display: block;
+    width: 70px;
+    height: 70px;
     position: absolute;
-    height: 65px;
-    width: 65px;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+.mure {
+    display: block;
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.character {
+    display: block;
+    width: 70px;
+    height: 70px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    object-fit: contain;
 }
 /*--------------------------*/
 #pad
@@ -273,7 +314,6 @@ input:focus {
     margin-right: -2px;
 }
 
-/* 2. Bouton désactivé : Petit, transparent, style pixel sombre */
 .pixel-btn {
     height: 40px;
     width: 115px;
@@ -289,13 +329,11 @@ input:focus {
     transition: all 0.15s ease-in-out;
 }
 
-/* Hover quand désactivé */
 .pixel-btn:hover {
     color: #fff;
     border-color: #0099ab;
 }
 
-/* 3. Bouton ACTIVÉ : Fond pierre grise, écriture & bordure en bleu cyan */
 .toggle-checkbox:checked + .pixel-btn,
 .toggle-radio:checked + .pixel-btn {
     background-color: #2b3336;
@@ -367,6 +405,7 @@ input:focus {
     position: absolute;
     right: 30vh;
 }
+
 
 /*--------------------------------------------*/
 #flash-container {

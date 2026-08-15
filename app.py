@@ -102,14 +102,20 @@ def game():
     if request.method == 'POST' and 'gameMode' in request.form:
         difficulty = request.form.get('gameMode')
         speed = request.form.get('fast')
+        mode = request.form.get('blind')
+        session['mode'] = mode
         session['speed'] = speed
+
         grid, wumpus = GenerateGrid(difficulty)
         start = GetStartCharacter(grid, 'player')
         pos_creature = {"player" :start,
                     "wumpus" :wumpus}
         pos_creature["bats"] = GetBat(difficulty, grid, pos_creature)
 
+        fog_grid = None
+        fog_grid = GetFog(pos_creature,mode, fog_grid)
 
+        session['fogGrid'] = fog_grid
         session['pos_creature'] = pos_creature
         session['grid'] = grid
         session['is_dead'] = False
@@ -119,45 +125,57 @@ def game():
     elif request.method == 'POST':
         pos_creature = session.get('pos_creature')
         grid = session.get('grid')
+
         if not session.get('is_dead', False):
             if request.form.get('shoot') == 'shoot':
                 direction = request.form.get("shoot_dir")
-                win = ShootArrow(grid,direction ,pos_creature)
-                if win :
+                win = ShootArrow(grid, direction, pos_creature)
+                if win:
                     flash("Victory", "win")
-                    session['is_dead'] = True
                     update_stats(session['user'], 'win')
-                else :
-                    flash("Tire raté", "lose")
-                    session['is_dead'] = True
+                else:
+                    flash("Tir raté", "lose")
                     update_stats(session['user'], 'miss')
-            else :
+
+                session['is_dead'] = True
+                session['fogGrid'] = GetFog(pos_creature, 'clear', None)
+
+            else:
                 direction = request.form.get('direction')
                 speed = session.get('speed', None)
                 DepPlayer(grid, direction, pos_creature, speed)
                 pos_creature = UseBat(grid, pos_creature)
 
+                mode = session.get('mode', None)
+                fog_grid = session.get('fogGrid')
+                session['fogGrid'] = GetFog(pos_creature, mode, fog_grid)
+
                 type_of_death = IsHeDead(grid, pos_creature)
                 if type_of_death == 1:
-                    flash("mort par le wumpus.", "lose")
+                    flash("Mort par le Wumpus.", "lose")
                     session['is_dead'] = True
                     update_stats(session['user'], 'wumpus')
+                    session['fogGrid'] = GetFog(pos_creature, 'clear', None)
+
                 elif type_of_death == 2:
-                    flash("mort par un puit.", "lose")
+                    flash("Mort par un puits.", "lose")
                     session['is_dead'] = True
                     update_stats(session['user'], 'pits')
+                    session['fogGrid'] = GetFog(pos_creature, 'clear', None)
 
             session['pos_creature'] = pos_creature
             return redirect(url_for('game'))
     else:
         pos_creature = session.get('pos_creature')
         grid = session.get('grid')
+        fog_grid = session.get('fogGrid')
 
     return render_template('game.html',
                            grid=grid,
                            pos_creature=pos_creature,
                            is_dead=session.get('is_dead', False),
-                           shoot=session.get('shoot', False),)
+                           shoot=session.get('shoot', False),
+                           fog_grid=fog_grid,)
 
 if __name__ == '__main__':
     app.run(debug=False) # mettre en false a la fin

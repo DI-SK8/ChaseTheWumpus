@@ -23,45 +23,50 @@
   </form>
 </div>
 
-<table>
-    {%for row in grid %}
-        {%set y = loop.index0%}
+<table class="game-table">
+    {% for row in grid %}
+        {% set y = loop.index0 %}
         <tr>
-            {%for col in row%}
-                {%set x = loop.index0%}
-                <td>
-                    {%if y == pos_creature["player"][0] and x == pos_creature["player"][1]%}
+            {% for col in row %}
+                {% set x = loop.index0 %}
+                <td class="game-cell">
+                    {% if col == 0 %}
+                        <img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}" class="tile-bg"/>
+                    {% elif col == 1 %}
+                        <img src="{{ url_for('static', filename='Asset/tunnel_1-removebg-preview.png') }}" class="tile-bg"/>
+                    {% elif col == 2 %}
+                        <img src="{{ url_for('static', filename='Asset/tunnel_2-removebg-preview.png') }}" class="tile-bg"/>
+                    {% elif col == 3 %}
+                        <img src="{{ url_for('static', filename='Asset/puit-removebg-preview.png') }}" class="tile-bg"/>
+                    {% elif col == 4 %}
+                        <img src="{{ url_for('static', filename='Asset/proche_puit-removebg-preview.png') }}" class="tile-bg"/>
+                    {% elif col == 6 %}
+                        <img src="{{ url_for('static', filename='Asset/proche_M-removebg-preview.png') }}" class="tile-bg"/>
+                    {% elif col == 7 %}
+                        <img src="{{ url_for('static', filename='Asset/cave_puit_wumpus.png') }}" class="tile-bg"/>
+                    {% endif %}
+
+                    {% if y == pos_creature["player"][0] and x == pos_creature["player"][1] %}
                         <img src="{{ url_for('static', filename='Asset/perso-removebg-preview.png') }}" class="character"/>
-                    {%endif%}
-                    {%if y == pos_creature["wumpus"][0] and x == pos_creature["wumpus"][1]%}
+                    {% endif %}
+
+                    {% if y == pos_creature["wumpus"][0] and x == pos_creature["wumpus"][1] %}
                         <img src="{{ url_for('static', filename='Asset/wumpuq-removebg-preview.png') }}" class="character"/>
-                    {%endif%}
+                    {% endif %}
 
-                    {%for bat in pos_creature["bats"]%}
-                        {%if y == bat[0][0] and x == bat[0][1]%}
+                    {% for bat in pos_creature["bats"] %}
+                        {% if y == bat[0][0] and x == bat[0][1] %}
                             <img src="{{ url_for('static', filename='Asset/bat_2.png') }}" class="character"/>
-                        {%endif%}
-                    {%endfor%}
+                        {% endif %}
+                    {% endfor %}
 
-                    {%if col == 0%}
-                        <img src="{{ url_for('static', filename='Asset/cave-removebg-preview.png') }}"/>
-                    {%elif col ==1%}
-                        <img src="{{ url_for('static', filename='Asset/tunnel_1-removebg-preview.png') }}"/>
-                    {%elif col ==2%}
-                        <img src="{{ url_for('static', filename='Asset/tunnel_2-removebg-preview.png') }}"/>
-                    {%elif col ==3%}
-                        <img src="{{ url_for('static', filename='Asset/puit-removebg-preview.png') }}"/>
-                    {%elif col ==4%}
-                        <img src="{{ url_for('static', filename='Asset/proche_puit-removebg-preview.png') }}"/>
-                    {%elif col ==6%}
-                        <img src="{{ url_for('static', filename='Asset/proche_M-removebg-preview.png') }}"/>
-                    {%elif col ==7%}
-                        <img src="{{ url_for('static', filename='Asset/cave_puit_wumpus.png') }}"/>
-                    {%endif%}
+                    {% if fog_grid[y][x] == True %}
+                        <img src="{{ url_for('static', filename='Asset/mure.jpg') }}" class="mure"/>
+                    {% endif %}
                 </td>
-            {%endfor%}
+            {% endfor %}
         </tr>
-    {%endfor%}
+    {% endfor %}
 </table>
 
 <div id="shoot-container">
