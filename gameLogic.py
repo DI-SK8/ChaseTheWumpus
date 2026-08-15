@@ -277,43 +277,58 @@ def FloodFile(grid, r_start, c_start):
     propagation(r_start, c_start)
     return view
 
-def DepPlayer(grid, value, pos_creature) :
+def Mouvement(direction, r, c):
+
+    match direction:
+        case 'up':
+            next_coord = ((r - 1) % ROW, c)
+        case 'down':
+            next_coord = ((r + 1) % ROW, c)
+        case 'left':
+            next_coord = (r, (c - 1) % COL)
+        case 'right':
+            next_coord = (r, (c + 1) % COL)
+    return next_coord
+
+def DepPlayer(grid, value, pos_creature, mode) :
     player = pos_creature['player']
     r, c = player[0], player[1]
 
-    match value:
-        case 'up':
-            new_coord = ((r - 1) % ROW, c)
-        case 'down':
-            new_coord = ((r + 1) % ROW, c)
-        case 'left':
-            new_coord = (r, (c - 1) % COL)
-        case 'right':
-            new_coord = (r, (c + 1) % COL)
-
-    current_tile = grid[r][c]
-    came_from = pos_creature.get('came_from')
 
 
-    if current_tile == 1:
-        if came_from in ('right', 'up'):
-            if value not in ('left', 'down'):
-                return pos_creature
-        else:
-            if value not in ('right', 'up'):
-                return pos_creature
+    if mode == 'Fast' :
 
-    elif current_tile == 2:
-        if came_from in ('right', 'down'):
-            if value not in ('left', 'up'):
-                return pos_creature
-        else:
-            if value not in ('right', 'down'):
-                return pos_creature
+        new_coord = Mouvement(value, r, c)
+        r, c = new_coord
 
+        while grid[r][c] in (1, 2) :
+            current_tile = grid[r][c]
+            value = ThroughtTunel(current_tile, value)
+            new_coord = Mouvement(value, r, c)
+            r, c = new_coord
+
+    else :
+        new_coord = Mouvement(value, r, c)
+        current_tile = grid[r][c]
+        came_from = pos_creature.get('came_from')
+
+        if current_tile == 1:
+            if came_from in ('right', 'up'):
+                if value not in ('left', 'down'):
+                    return pos_creature
+            else:
+                if value not in ('right', 'up'):
+                    return pos_creature
+
+        elif current_tile == 2:
+            if came_from in ('right', 'down'):
+                if value not in ('left', 'up'):
+                    return pos_creature
+            else:
+                if value not in ('right', 'down'):
+                    return pos_creature
 
     player = new_coord
-
 
     if grid[player[0]][player[1]] in (1, 2):
         pos_creature['came_from'] = value
@@ -347,7 +362,6 @@ def UseBat(grid, pos_creature):
     bat = next((b for b in bats if b[0] == player), None)
 
     if bat:
-        indice = bats.index(bat)
         if bat[1] == 0:
             bat[1] += 1
         else :
@@ -376,15 +390,7 @@ def ShootArrow(grid, value, pos_creature):
     current_direction = value
 
     while True:
-        match current_direction:
-            case 'up':
-                next_coord = ((r - 1) % ROW, c)
-            case 'down':
-                next_coord = ((r + 1) % ROW, c)
-            case 'left':
-                next_coord = (r, (c - 1) % COL)
-            case 'right':
-                next_coord = (r, (c + 1) % COL)
+        next_coord = Mouvement(current_direction, r, c)
 
         r, c = next_coord
         tile = grid[r][c]
@@ -395,14 +401,19 @@ def ShootArrow(grid, value, pos_creature):
         if tile not in (1, 2):
             return False
 
-        if tile == 1:
-            if current_direction in ('right', 'up'):
-                current_direction = 'left' if current_direction == 'up' else 'down'
-            else:
-                current_direction = 'right' if current_direction == 'down' else 'up'
-        elif tile == 2:
-            if current_direction in ('right', 'down'):
-                current_direction = 'left' if current_direction == 'down' else 'up'
-            else:
-                current_direction = 'right' if current_direction == 'up' else 'down'
+        current_direction = ThroughtTunel(tile, current_direction)
 
+
+def ThroughtTunel(tile, current_direction) :
+    if tile == 1:
+        if current_direction in ('right', 'up'):
+            current_direction = 'left' if current_direction == 'up' else 'down'
+        else:
+            current_direction = 'right' if current_direction == 'down' else 'up'
+    elif tile == 2:
+        if current_direction in ('right', 'down'):
+            current_direction = 'left' if current_direction == 'down' else 'up'
+        else:
+            current_direction = 'right' if current_direction == 'up' else 'down'
+
+    return current_direction

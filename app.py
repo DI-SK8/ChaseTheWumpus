@@ -101,7 +101,8 @@ def game():
 
     if request.method == 'POST' and 'gameMode' in request.form:
         difficulty = request.form.get('gameMode')
-
+        speed = request.form.get('fast')
+        session['speed'] = speed
         grid, wumpus = GenerateGrid(difficulty)
         start = GetStartCharacter(grid, 'player')
         pos_creature = {"player" :start,
@@ -132,7 +133,8 @@ def game():
                     update_stats(session['user'], 'miss')
             else :
                 direction = request.form.get('direction')
-                DepPlayer(grid, direction, pos_creature)
+                speed = session.get('speed', None)
+                DepPlayer(grid, direction, pos_creature, speed)
                 pos_creature = UseBat(grid, pos_creature)
 
                 type_of_death = IsHeDead(grid, pos_creature)
