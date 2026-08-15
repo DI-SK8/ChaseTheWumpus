@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Classement{% endblock %}
+
+{% block content %}
+
+<div id="leaderboard-container" class="info-player-container">
+    <h2>Classement</h2>
+    <table>
+        <thead>
+            <tr>
+                <th><strong>Pseudo</strong></th>
+                <th>Victoires</th>
+                <th>Parties jouées</th>
+                <th>Morts par Wumpus</th>
+                <th>Tombé dans le puits</th>
+                <th>Tirs manqués</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in leaderboard %}
+            <tr>
+                <td><strong>{{ player.username }}</strong></td>
+                <td>{{ player.victories }}</td>
+                <td>{{ player.games_played }}</td>
+                <td>{{ player.killed_by_wumpus }}</td>
+                <td>{{ player.fell_in_pit }}</td>
+                <td>{{ player.miss_shot }}</td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
+
+<div id="leaderboard-form-container">
+    <form action="{{ url_for('home') }}" method="GET">
+        <button type="submit" class="btn-start">Retour</button>
+    </form>
+    <form action="{{ url_for('logout') }}" method="POST">
+        <button type="submit" class="btn-deconexion">Deconexion</button>
+    </form>
+</div>
+
+{% endblock %}

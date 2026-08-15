@@ -225,14 +225,21 @@ input:focus {
     box-sizing: border-box;
 }
 
-#stat-container {
-    width: 800px;
-    max-height: 400px;
-}
-
 #leaderboard-container {
 
     width: 900px;
+    min-height: 400px;
+}
+
+#leaderboard-container td,
+#leaderboard-container th
+{
+    padding: 0px 8px  ;
+    text-align: center;
+}
+
+#stat-container {
+    width: 800px;
     max-height: 400px;
 }
 
@@ -242,7 +249,8 @@ input:focus {
     text-align: center;
 }
 
-#stat-form-container
+#stat-form-container,
+#leaderboard-form-container
 {
     position: absolute;
     bottom: 3vh;
