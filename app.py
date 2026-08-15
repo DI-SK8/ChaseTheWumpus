@@ -5,13 +5,16 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-app = Flask(__name__) # utilisation de flask
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev_key_fallback') # on peut changer la clé apres avoir redémarer le serveur
+app = Flask(__name__)
+app.secret_key = os.getenv('SECRET_KEY', 'une_cle_secrete_tres_simple_pour_le_test')
 
 app.config['SESSION_COOKIE_HTTPONLY'] = True #prot javascrips et xss
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax' #CSRF
 
-init_db()
+try:
+    init_db()
+except Exception as e:
+    print(f"Erreur d'initialisation BDD : {e}")
 
 @app.after_request
 def add_header(response): #evite le retour
@@ -29,11 +32,12 @@ def home():
     stats = get_stats(session['user'])
 
     return render_template('home.html', user=session['user'], stats=stats)
+
 @app.route('/logout',methods=['POST','GET'])
 def logout():
     session.clear()
     flash("Vous avez été déconnecté avec succès.", "info")
-    return render_template('index.html')
+    return redirect(url_for('login'))
 
 @app.route('/leaderboard',methods=['POST','GET'])
 def leaderboard():
@@ -44,30 +48,35 @@ def leaderboard():
     leaderboard = get_leaderboard()
 
     return render_template('leaderboard.html', leaderboard=leaderboard)
-@app.route('/',methods=['POST','GET'])
-def login():
-    if 'user' in session:
-        session.clear()
-    if request.method == 'POST':
-        name_user=request.form['nom']
-        pswd_user=request.form['password']
 
-        if name_user == '' or pswd_user == '':
-            flash("Merci de remplir les champs", "error")
-        elif not verify_user(name_user, pswd_user):
-            flash("les informations de connexion ne sont pas corect", "error")
-        else:
-            session['user'] = name_user
-            return redirect(url_for('home'))
+@app.route('/', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        name_user = request.form.get('nom', '')
+        pswd_user = request.form.get('password', '')
+
+        if not name_user or not pswd_user:
+            flash("Merci de remplir tous les champs", "error")
+            return render_template('index.html')
+
+        isValid = verify_user(name_user, pswd_user)
+        if not isValid:
+            flash("Informations de connexion incorrectes", "error")
+            return render_template('index.html')
+
+        session['user'] = name_user
+
+        return redirect(url_for('home'))
 
     return render_template('index.html')
+
 @app.route('/SignIn',methods=['GET', 'POST'])
 def SignIn():
     if 'user' in session:
         session.clear()
     if request.method == 'POST':  # post methode
-        name_user = request.form['nom']
-        pswd_user = request.form['password']
+        name_user = request.form.get('nom', '')
+        pswd_user = request.form.get('password', '')
         if name_user == '' or pswd_user == '':
             flash("Merci de remplir les champs", "error")
         elif is_user_used(name_user) :
@@ -79,6 +88,7 @@ def SignIn():
             session['user'] = name_user
             return redirect(url_for('home'))
     return render_template('SignIn.html')
+
 @app.route('/game', methods=['POST', 'GET'])
 def game():
     if 'user' not in session:
@@ -105,8 +115,8 @@ def game():
 
         return redirect(url_for('game'))
     elif request.method == 'POST':
-        pos_creature = session['pos_creature']
-        grid = session['grid']
+        pos_creature = session.get('pos_creature')
+        grid = session.get('grid')
         if not session.get('is_dead', False):
 
             direction = request.form.get('direction')
@@ -133,7 +143,6 @@ def game():
                            grid=grid,
                            pos_creature=pos_creature,
                            is_dead=session.get('is_dead', False))
-
 
 if __name__ == '__main__':
     app.run(debug=False) # mettre en false a la fin

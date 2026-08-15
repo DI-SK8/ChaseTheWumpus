@@ -5,7 +5,8 @@ import os
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 
-load_dotenv()
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
@@ -46,8 +47,7 @@ def init_db():
             fell_in_pit INT DEFAULT 0,
             miss_shot INT DEFAULT 0,
             games_played INT DEFAULT 0,
-            CONSTRAINT player_stats_user_fk
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            CONSTRAINT player_stats_user_fk FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
         );
     """)
 
@@ -120,33 +120,37 @@ def verify_user(username, password):
     return check_password_hash(user[0], password)
 
 def update_stats(username, event):
-    """Incrémente la statistique globale et l'événement de fin de partie."""
     conn = get_connection()
     cur = conn.cursor()
 
     cur.execute("""
-        UPDATE player_stats SET games_played = games_played + 1
+        UPDATE player_stats
+        SET games_played = games_played + 1
         WHERE user_id = (SELECT id FROM users WHERE username = %s);
     """, (username,))
 
     if event == "win":
         query = """
-            UPDATE player_stats SET victories = victories + 1
+            UPDATE player_stats
+            SET victories = victories + 1
             WHERE user_id = (SELECT id FROM users WHERE username = %s);
         """
     elif event == "wumpus":
         query = """
-            UPDATE player_stats SET killed_by_wumpus = killed_by_wumpus + 1
+            UPDATE player_stats
+            SET killed_by_wumpus = killed_by_wumpus + 1
             WHERE user_id = (SELECT id FROM users WHERE username = %s);
         """
     elif event == "pits":
         query = """
-            UPDATE player_stats SET fell_in_pit = fell_in_pit + 1
+            UPDATE player_stats
+            SET fell_in_pit = fell_in_pit + 1
             WHERE user_id = (SELECT id FROM users WHERE username = %s);
         """
     else:
         query = """
-            UPDATE player_stats SET miss_shot = miss_shot + 1
+            UPDATE player_stats
+            SET miss_shot = miss_shot + 1
             WHERE user_id = (SELECT id FROM users WHERE username = %s);
         """
 
@@ -159,7 +163,7 @@ def get_leaderboard(limit=10):
     conn = get_connection()
     cur = conn.cursor(cursor_factory=RealDictCursor)
 
-    cur.execute("""SELECT * FROM leaderboard LIMIT %s;""",(limit,))
+    cur.execute("SELECT * FROM leaderboard LIMIT %s;", (limit,))
     rankings = cur.fetchall()
 
     cur.close()
@@ -184,14 +188,22 @@ def get_stats(username):
     stats = cur.fetchone()
     cur.close()
     conn.close()
+
+    if stats is None:
+        return {
+            'games_played': 0,
+            'victories': 0,
+            'killed_by_wumpus': 0,
+            'fell_in_pit': 0,
+            'miss_shot': 0
+        }
+
     return stats
 
-def suppcompte(username) :
+def suppcompte(username):
     conn = get_connection()
     cur = conn.cursor()
-    cur.execute("""
-        DELETE FROM users WHERE username = %s;
-    """, (username,))
+    cur.execute("DELETE FROM users WHERE username = %s;", (username,))
     conn.commit()
     cur.close()
     conn.close()
@@ -199,10 +211,7 @@ def suppcompte(username) :
 def delete_table():
     conn = get_connection()
     cur = conn.cursor()
-    cur.execute("""
-        DROP VIEW leaderboard;
-    """)
+    cur.execute("DROP VIEW IF EXISTS leaderboard;")
     conn.commit()
     cur.close()
     conn.close()
-
