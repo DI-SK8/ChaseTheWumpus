@@ -19,6 +19,7 @@ def add_header(response): #evite le retour
     response.headers['Pragma'] = 'no-cache'
     response.headers['Expires'] = '-1'
     return response
+
 @app.route('/home')
 def home():
     if 'user' not in session:
@@ -32,8 +33,17 @@ def home():
 def logout():
     session.clear()
     flash("Vous avez été déconnecté avec succès.", "info")
-    return redirect(url_for('login'))
+    return render_template('index.html')
 
+@app.route('/leaderboard',methods=['POST','GET'])
+def leaderboard():
+    if 'user' not in session:
+        flash("Veuillez vous connecter pour voir le classement.", "error")
+        return redirect(url_for('login'))
+
+    leaderboard = get_leaderboard()
+
+    return render_template('leaderboard.html', leaderboard=leaderboard)
 @app.route('/',methods=['POST','GET'])
 def login():
     if 'user' in session:
@@ -75,29 +85,33 @@ def game():
         flash("Veuillez vous connecter pour jouer.", "error")
         return redirect(url_for('login'))
 
-    if 'grid' not in session and 'pos_creature' not in session:
-        grid, wumpus = GenerateGrid('medium')
+    if request.method == 'GET' and 'grid' not in session:
+        flash("Veuillez démarrer une nouvelle partie.", "info")
+        return redirect(url_for('home'))
+
+    if request.method == 'POST' and 'gameMode' in request.form:
+        difficulty = request.form.get('gameMode')
+
+        grid, wumpus = GenerateGrid(difficulty)
         start = GetStartCharacter(grid, 'player')
         pos_creature = {"player" :start,
                     "wumpus" :wumpus}
-        pos_creature["bats"] = GetBat('medium', grid, pos_creature)
+        pos_creature["bats"] = GetBat(difficulty, grid, pos_creature)
 
 
         session['pos_creature'] = pos_creature
         session['grid'] = grid
-    else :
+        session['is_dead'] = False
+
+        return redirect(url_for('game'))
+    elif request.method == 'POST':
         pos_creature = session['pos_creature']
         grid = session['grid']
-    if request.method == 'POST':
         if not session.get('is_dead', False):
 
-
             direction = request.form.get('direction')
-
             DepPlayer(grid, direction, pos_creature)
-
             pos_creature = UseBat(grid, pos_creature)
-
 
             type_of_death = IsHeDead(grid, pos_creature)
             if type_of_death == 1:
@@ -110,8 +124,15 @@ def game():
                 # update_stats(session['user'], 'pits')
 
             session['pos_creature'] = pos_creature
+            return redirect(url_for('game'))
+    else:
+        pos_creature = session.get('pos_creature')
+        grid = session.get('grid')
 
-    return render_template('game.html', grid=grid, pos_creature=pos_creature, is_dead=session.get('is_dead', False))
+    return render_template('game.html',
+                           grid=grid,
+                           pos_creature=pos_creature,
+                           is_dead=session.get('is_dead', False))
 
 
 if __name__ == '__main__':

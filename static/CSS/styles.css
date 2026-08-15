@@ -245,7 +245,7 @@ input:focus {
 #stat-form-container
 {
     position: absolute;
-    bottom: 5vh;
+    bottom: 3vh;
 }
 
 .toggle-checkbox {
@@ -336,6 +336,18 @@ input:focus {
     color: #ff8080;
     border-color: #ff4d4d;
     box-shadow: 0 0 8px rgba(255, 77, 77, 0.4);
+}
+
+.btn-classement{
+    background-color: transparent;
+    border: none;
+    color: #E6F7FF;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    text-decoration: underline;
+}
+
+.btn-classement:hover{
+    color: #d4af37;
 }
 
 /*--------------------------------------------*/
