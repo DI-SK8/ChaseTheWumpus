@@ -86,4 +86,12 @@
         <button type="submit" class="btn-start" value="shoot" name="shoot">tire</button>
     </form>
 </div>
+
+<div class="goback-container">
+    {%if is_dead%}
+    <form action="{{ url_for('home') }}" method="GET">
+        <button type="submit" class="btn-start">Retour</button>
+    </form>
+    {%endif%}
+</div>
 {%endblock%}

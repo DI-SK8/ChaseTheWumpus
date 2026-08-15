@@ -362,6 +362,11 @@ input:focus {
     position: absolute;
     bottom: 5vh;
 }
+.goback-container
+{
+    position: absolute;
+    right: 30vh;
+}
 
 /*--------------------------------------------*/
 #flash-container {

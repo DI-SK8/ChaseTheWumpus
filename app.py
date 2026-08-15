@@ -124,8 +124,12 @@ def game():
                 win = ShootArrow(grid,direction ,pos_creature)
                 if win :
                     flash("Victory", "win")
+                    session['is_dead'] = True
+                    update_stats(session['user'], 'win')
                 else :
                     flash("Tire raté", "lose")
+                    session['is_dead'] = True
+                    update_stats(session['user'], 'miss')
             else :
                 direction = request.form.get('direction')
                 DepPlayer(grid, direction, pos_creature)
@@ -135,12 +139,11 @@ def game():
                 if type_of_death == 1:
                     flash("mort par le wumpus.", "lose")
                     session['is_dead'] = True
-                    # update_stats(session['user'], 'wumpus')
+                    update_stats(session['user'], 'wumpus')
                 elif type_of_death == 2:
                     flash("mort par un puit.", "lose")
                     session['is_dead'] = True
-                    # update_stats(session['user'], 'pits')
-
+                    update_stats(session['user'], 'pits')
 
             session['pos_creature'] = pos_creature
             return redirect(url_for('game'))
